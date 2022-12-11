@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Tesseract">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/resources/Tesseract" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/resources/Tesseract" recursive="false" />
+  </library>
+</component>
