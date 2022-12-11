@@ -18,7 +18,7 @@ public class DigitRecognition {
         if (!directory.exists() || directory.listFiles() == null) {
             throw new IllegalArgumentException("Directory does not exist.");
         }
-        if (directory.listFiles().length == 0) {
+        if (Objects.requireNonNull(directory.listFiles()).length == 0) {
             throw new IllegalArgumentException("Directory is empty.");
         }
 
