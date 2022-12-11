@@ -1,10 +1,7 @@
 package com.hk.stonebank.image;
 
 import com.hk.stonebank.settings.Settings;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Rect;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -61,6 +58,7 @@ public class BoardDetection {
         var output = new Mat();
         var boundingRect = Imgproc.boundingRect(largestContour);
         output = new Mat(image, boundingRect);
+
         Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath(), output);
         System.out.println("Board detected, output is located at " + Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath());
 
