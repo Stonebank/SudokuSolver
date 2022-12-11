@@ -12,4 +12,7 @@ public class Settings {
     public static final File BOARD_IMAGE_OUTPUT = new File("./resources/board/board_output.png");
     public static final File BOARD_CELL_IMAGE_OUTPUT = new File("./resources/board/cells/");
 
+    public static final File TESSERACT_TRAINED_DATA = new File("./resources/tesseract/model/");
+    public static final String TESSERACT_DPI = "300";
+
 }
