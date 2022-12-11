@@ -23,3 +23,7 @@ This is the steps summarized for this algorithm
 
 The objective of this algorithm is to perform OCR to identify the digit. The training dataset applied for this is specified for digit training. The solution is still experimental and therefore it is not optimal yet.
 
+# Developer
+
+This software is developed and designed by Hassan K.
+
