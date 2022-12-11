@@ -89,30 +89,20 @@ public class BoardDetection {
         int cellWidth = output.cols() / Settings.SUDOKU_BOARD_SIZE;
         int cellHeight = output.rows() / Settings.SUDOKU_BOARD_SIZE;
 
-// Calculate the margin and padding values for each cell
-        int cellMarginX = cellWidth / Settings.SUDOKU_BOARD_SIZE;
-        int cellPaddingX = cellMarginX / 2;
-        int cellMarginY = cellHeight / Settings.SUDOKU_BOARD_SIZE;
-        int cellPaddingY = cellMarginY / 2;
-
         for (int x = 0; x < Settings.SUDOKU_BOARD_SIZE; x++) {
             for (int y = 0; y < Settings.SUDOKU_BOARD_SIZE; y++) {
 
-                // Adjust the position of the cell to center the digit within it
-                var cellRect = new Rect(
-                        x * cellWidth + cellMarginX + cellPaddingX,
-                        y * cellHeight + cellMarginY + cellPaddingY,
-                        cellWidth - cellMarginX - cellPaddingX,
-                        cellHeight - cellMarginY - cellPaddingY
-                );
-
+                var cellRect = new Rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
                 var cell = new Mat(output, cellRect);
 
                 String fileName = String.format("cell_%d_%d.png", x, y);
                 Imgcodecs.imwrite(Settings.BOARD_CELL_IMAGE_OUTPUT + "/" + fileName, cell);
 
             }
-
         }
+
+        System.out.println("Cells detected, output is located at " + Settings.BOARD_CELL_IMAGE_OUTPUT.getAbsolutePath());
+
     }
+
 }
