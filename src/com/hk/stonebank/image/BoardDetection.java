@@ -56,8 +56,20 @@ public class BoardDetection {
         }
 
         var output = new Mat();
+
         var boundingRect = Imgproc.boundingRect(largestContour);
-        output = new Mat(image, boundingRect);
+
+        int margin = 10;
+
+        var adjustedX = boundingRect.x + margin;
+        var adjustedY = boundingRect.y + margin;
+
+        var adjustedWidth = boundingRect.width - 2 * margin;
+        var adjustedHeight = boundingRect.height - 2 * margin;
+
+        var adjustedBoundingRect = new Rect(adjustedX, adjustedY, adjustedWidth, adjustedHeight);
+
+        output = new Mat(image, adjustedBoundingRect);
 
         Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath(), output);
         System.out.println("Board detected, output is located at " + Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath());
@@ -77,19 +89,30 @@ public class BoardDetection {
         int cellWidth = output.cols() / Settings.SUDOKU_BOARD_SIZE;
         int cellHeight = output.rows() / Settings.SUDOKU_BOARD_SIZE;
 
+// Calculate the margin and padding values for each cell
+        int cellMarginX = cellWidth / Settings.SUDOKU_BOARD_SIZE;
+        int cellPaddingX = cellMarginX / 2;
+        int cellMarginY = cellHeight / Settings.SUDOKU_BOARD_SIZE;
+        int cellPaddingY = cellMarginY / 2;
+
         for (int x = 0; x < Settings.SUDOKU_BOARD_SIZE; x++) {
             for (int y = 0; y < Settings.SUDOKU_BOARD_SIZE; y++) {
-                var cellRect = new Rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+
+                // Adjust the position of the cell to center the digit within it
+                var cellRect = new Rect(
+                        x * cellWidth + cellMarginX + cellPaddingX,
+                        y * cellHeight + cellMarginY + cellPaddingY,
+                        cellWidth - cellMarginX - cellPaddingX,
+                        cellHeight - cellMarginY - cellPaddingY
+                );
+
                 var cell = new Mat(output, cellRect);
 
                 String fileName = String.format("cell_%d_%d.png", x, y);
                 Imgcodecs.imwrite(Settings.BOARD_CELL_IMAGE_OUTPUT + "/" + fileName, cell);
 
             }
+
         }
-
-        System.out.println("Cells detected, output is located at " + Settings.BOARD_CELL_IMAGE_OUTPUT.getAbsolutePath());
-
     }
-
 }

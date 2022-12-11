@@ -47,7 +47,7 @@ public class DigitRecognition {
                 if (result.isEmpty() || result.isBlank()) {
                     continue;
                 }
-                if (result.toCharArray().length > 1) {
+                if (result.trim().toCharArray().length > 1) {
                     System.out.println(cell.getName() + " is not recognized as single digit, best guess: " + result.toCharArray()[0]);
                     continue;
                 }
