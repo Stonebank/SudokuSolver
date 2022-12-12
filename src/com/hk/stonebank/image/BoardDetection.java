@@ -5,9 +5,12 @@ import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BoardDetection {
 
@@ -20,6 +23,15 @@ public class BoardDetection {
         }
         if (!image.getName().endsWith(".png")) {
             throw new IllegalArgumentException("Image is not a png");
+        }
+        if (Settings.BOARD_CELL_IMAGE_OUTPUT.exists()) {
+            for (File cell : Objects.requireNonNull(Settings.BOARD_CELL_IMAGE_OUTPUT.listFiles())) {
+                if (cell == null)
+                    continue;
+                if (!cell.delete()) {
+                    System.err.println("Failed to delete " + cell.getName());
+                }
+            }
         }
     }
 
@@ -40,6 +52,7 @@ public class BoardDetection {
 
         List<MatOfPoint> contours = new ArrayList<>();
         Imgproc.findContours(edges, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
 
         MatOfPoint largestContour = null;
         double largestArea = 0;
@@ -71,8 +84,15 @@ public class BoardDetection {
 
         output = new Mat(image, adjustedBoundingRect);
 
-        Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath(), output);
-        System.out.println("Board detected, output is located at " + Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath());
+        Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath(), output);
+        System.out.println("Board detected, output is located at " + Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath());
+
+        if (Settings.DEBUG_MODE) {
+            var board_contours = drawContoursAroundBoard(image, largestContour);
+            Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath(), board_contours);
+            System.out.println("Debug image with rectangle is located at " + Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath());
+        }
+
 
         detectAndCropCells(output);
 
@@ -101,8 +121,18 @@ public class BoardDetection {
             }
         }
 
+        if (Objects.requireNonNull(Settings.BOARD_CELL_IMAGE_OUTPUT.listFiles()).length != Settings.SUDOKU_BOARD_SIZE * Settings.SUDOKU_BOARD_SIZE) {
+            throw new IllegalStateException("The Sudoku board was not detected correctly");
+        }
+
         System.out.println("Cells detected, output is located at " + Settings.BOARD_CELL_IMAGE_OUTPUT.getAbsolutePath());
 
+    }
+
+    private Mat drawContoursAroundBoard(Mat image, MatOfPoint largestContour) {
+        var rect = Imgproc.boundingRect(largestContour);
+        Imgproc.rectangle(image, rect.tl(), rect.br(), new Scalar(0, 255, 0), 3);
+        return image;
     }
 
 }
