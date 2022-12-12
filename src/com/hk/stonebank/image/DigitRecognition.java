@@ -1,11 +1,13 @@
 package com.hk.stonebank.image;
 
+import com.hk.stonebank.board.SudokuBoard;
 import com.hk.stonebank.settings.Settings;
 import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class DigitRecognition {
@@ -13,6 +15,8 @@ public class DigitRecognition {
     private final File directory;
 
     private final Tesseract tesseract;
+
+    private final int[][] board = new int[Settings.SUDOKU_BOARD_SIZE][Settings.SUDOKU_BOARD_SIZE];
 
     public DigitRecognition(File directory) {
         if (!directory.exists() || directory.listFiles() == null) {
@@ -29,8 +33,10 @@ public class DigitRecognition {
 
         System.out.println("Defining tesseract configuration...");
         this.tesseract.setPageSegMode(ITessAPI.TessPageSegMode.PSM_SINGLE_BLOCK);
+        this.tesseract.setOcrEngineMode(ITessAPI.TessOcrEngineMode.OEM_LSTM_ONLY);
         this.tesseract.setTessVariable("user_defined_dpi", Settings.TESSERACT_DPI);
-        this.tesseract.setLanguage("./resources/tesseract/model/digits");
+        this.tesseract.setTessVariable("tessedit_char_whitelist", "0123456789");
+        this.tesseract.setLanguage(Settings.TESSERACT_TRAINED_DATA.getPath());
 
     }
 
@@ -41,20 +47,6 @@ public class DigitRecognition {
             if (!cell.getName().endsWith(".png")) {
                 System.err.println(cell.getName() + " is not a png image file, skipped.");
                 continue;
-            }
-            try {
-                var result = tesseract.doOCR(cell);
-                if (result.isEmpty() || result.isBlank()) {
-                    continue;
-                }
-                if (result.trim().toCharArray().length > 1) {
-                    System.out.println(cell.getName() + " is not recognized as single digit, best guess: " + result.toCharArray()[0]);
-                    continue;
-                }
-                System.out.println("Result for " + cell.getName() + ": " + result);
-            } catch (TesseractException e) {
-                System.err.println("Tesseract error: " + e);
-                e.printStackTrace();
             }
         }
     }
