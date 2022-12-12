@@ -3,6 +3,8 @@
 SudokuSolver is a successor from my previous [version](https://github.com/Stonebank/SudukoSolver-Old).
 The newer version of the software will use [OpenCV](https://opencv.org/) and [Tesseract](https://en.wikipedia.org/wiki/Tesseract) with the digits trained dataset. 
 
+The older software did not always work as intended. The objective is to make this software work flawlessly at any time. 
+
 # Backtracking solving algorithm 
 
 The backtracking solving algorithm is a brute-force search algorithm that tries all the possible combinations of numbers until a solution is found that satisfies the constraints of the puzzle.
