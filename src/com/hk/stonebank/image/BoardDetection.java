@@ -82,7 +82,7 @@ public class BoardDetection {
 
         var adjustedBoundingRect = new Rect(adjustedX, adjustedY, adjustedWidth, adjustedHeight);
 
-        output = new Mat(image, adjustedBoundingRect);
+        output = new Mat(edges, adjustedBoundingRect);
 
         Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath(), output);
         System.out.println("Board detected, output is located at " + Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath());
