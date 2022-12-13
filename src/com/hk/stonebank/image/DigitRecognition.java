@@ -33,7 +33,6 @@ public class DigitRecognition {
 
         System.out.println("Defining tesseract configuration...");
         this.tesseract.setPageSegMode(ITessAPI.TessPageSegMode.PSM_SINGLE_BLOCK);
-        this.tesseract.setOcrEngineMode(ITessAPI.TessOcrEngineMode.OEM_LSTM_ONLY);
         this.tesseract.setTessVariable("user_defined_dpi", Settings.TESSERACT_DPI);
         this.tesseract.setTessVariable("tessedit_char_whitelist", "0123456789");
         this.tesseract.setLanguage(Settings.TESSERACT_TRAINED_DATA.getPath());
