@@ -40,6 +40,7 @@ public class DigitRecognition {
     }
 
     public void doOCR() {
+        int row = 0, col = 0;
         for (File cell : Objects.requireNonNull(directory.listFiles())) {
             if (cell == null)
                 continue;
@@ -47,7 +48,29 @@ public class DigitRecognition {
                 System.err.println(cell.getName() + " is not a png image file, skipped.");
                 continue;
             }
+            try {
+                String result = tesseract.doOCR(cell).replaceAll("[^\\d\\s]", "").trim();
+                if (result.isBlank() || result.isEmpty())
+                    result = "0";
+                if (result.length() > 1)
+                    result = result.substring(0, 1);
+                System.out.println("Cell " + row + ", " + col + " = " + result);
+                board[row][col] = Integer.parseInt(result);
+                col++;
+                if (col > 8) {
+                    row++;
+                    col = 0;
+                }
+            } catch (TesseractException e) {
+                e.printStackTrace();
+            }
         }
+        SudokuBoard board = new SudokuBoard(this.board);
+        if (!board.canSolve()) {
+            System.err.println("Not solvable. The OCR may be incorrect.");
+            return;
+        }
+        board.displayBoard();
     }
 
 }
