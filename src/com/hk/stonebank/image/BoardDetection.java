@@ -5,9 +5,7 @@ import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -82,25 +80,50 @@ public class BoardDetection {
 
         var adjustedBoundingRect = new Rect(adjustedX, adjustedY, adjustedWidth, adjustedHeight);
 
-        output = new Mat(edges, adjustedBoundingRect);
+        output = new Mat(image, adjustedBoundingRect);
 
         Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath(), output);
         System.out.println("Board detected, output is located at " + Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath());
 
         if (Settings.DEBUG_MODE) {
             var board_contours = drawContoursAroundBoard(image, largestContour);
+            var board_lines = drawLinesAroundBoard(image, largestContour);
             Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath(), board_contours);
+            Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath(), board_lines);
             System.out.println("Debug image with rectangle is located at " + Settings.BOARD_IMAGE_OUTPUT.getAbsolutePath());
         }
 
-
-        detectAndCropCells(output);
+        processCroppedBoard();
+        detectAndCropCells();
 
     }
 
-    public void detectAndCropCells(Mat output) {
+    public void processCroppedBoard() {
 
-        if (output == null || output.empty()) {
+        if (!Settings.BOARD_CELL_IMAGE_OUTPUT.exists()) {
+            throw new IllegalStateException("Board image output does not exist");
+        }
+
+        System.out.println("Performing additional image processing techniques on cropped board...");
+
+        var image = Imgcodecs.imread(Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath());
+
+        Mat grayImage = new Mat();
+        Imgproc.cvtColor(image, grayImage, Imgproc.COLOR_BGR2GRAY);
+        Imgproc.GaussianBlur(grayImage, grayImage, new Size(5, 5), 0);
+
+        Mat thresholdImage = new Mat();
+        Imgproc.adaptiveThreshold(grayImage, thresholdImage, 255, Imgproc.ADAPTIVE_THRESH_GAUSSIAN_C, Imgproc.THRESH_BINARY, 15, 30);
+
+        Imgcodecs.imwrite(Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath(), thresholdImage);
+
+    }
+
+    public void detectAndCropCells() {
+
+        var output = Imgcodecs.imread(Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath());
+
+        if (output.empty()) {
             throw new IllegalArgumentException("Output is null or empty");
         }
 
@@ -132,6 +155,27 @@ public class BoardDetection {
     private Mat drawContoursAroundBoard(Mat image, MatOfPoint largestContour) {
         var rect = Imgproc.boundingRect(largestContour);
         Imgproc.rectangle(image, rect.tl(), rect.br(), new Scalar(0, 255, 0), 3);
+        return image;
+    }
+
+    private Mat drawLinesAroundBoard(Mat image, MatOfPoint largestContour) {
+        var rect = Imgproc.boundingRect(largestContour);
+        int x = rect.x, y = rect.y, width = rect.width, height = rect.height;
+
+        int cellWidth = width / 9;
+        int cellHeight = height / 9;
+
+        for (int i = 1; i < 9; i++) {
+            Point p1 = new Point(x + i * cellWidth, y);
+            Point p2 = new Point(x + i * cellWidth, y + height);
+            Imgproc.line(image, p1, p2, new Scalar(0, 255, 0), 3);
+        }
+
+        for (int i = 1; i < 9; i++) {
+            Point p1 = new Point(x, y + i * cellHeight);
+            Point p2 = new Point(x + width, y + i * cellHeight);
+            Imgproc.line(image, p1, p2, new Scalar(0, 255, 0), 3);
+        }
         return image;
     }
 
