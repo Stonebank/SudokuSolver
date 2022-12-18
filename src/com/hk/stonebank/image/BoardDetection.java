@@ -132,10 +132,10 @@ public class BoardDetection {
         int cellWidth = output.cols() / Settings.SUDOKU_BOARD_SIZE;
         int cellHeight = output.rows() / Settings.SUDOKU_BOARD_SIZE;
 
-        for (int x = 0; x < Settings.SUDOKU_BOARD_SIZE; x++) {
-            for (int y = 0; y < Settings.SUDOKU_BOARD_SIZE; y++) {
+        for (int y = 0; y < Settings.SUDOKU_BOARD_SIZE; y++) {
+            for (int x = 0; x < Settings.SUDOKU_BOARD_SIZE; x++) {
 
-                var cellRect = new Rect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                var cellRect = new Rect(y * cellWidth, x * cellHeight, cellWidth, cellHeight);
                 var cell = new Mat(output, cellRect);
 
                 String fileName = String.format("cell_%d_%d.png", x, y);
