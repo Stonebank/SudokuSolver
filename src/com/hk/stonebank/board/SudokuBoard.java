@@ -1,13 +1,15 @@
 package com.hk.stonebank.board;
 
+import com.hk.stonebank.settings.Settings;
+
 public class SudokuBoard {
 
     private final int[][] board;
     private final int size;
 
-    public SudokuBoard(int[][] board, int size) {
+    public SudokuBoard(int[][] board) {
         this.board = board;
-        this.size = size;
+        this.size = Settings.SUDOKU_BOARD_SIZE;
     }
 
     public void displayBoard() {
