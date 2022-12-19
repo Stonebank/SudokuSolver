@@ -11,6 +11,8 @@ To run SudokuSolver, clone the project via your IDE or code editor and execute "
 
 To obtain the best results, keep the opened browser in focus.
 
+The SudokuSolver is tested with https://www.sudoku.com for now.
+
 # Backtracking solving algorithm 
 
 The backtracking solving algorithm is a brute-force search algorithm that tries all the possible combinations of numbers until a solution is found that satisfies the constraints of the puzzle.
