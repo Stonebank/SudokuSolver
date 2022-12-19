@@ -30,7 +30,11 @@ public class Launch {
         AutoTyper autoTyper = new AutoTyper(digitRecognition.getBoard());
         autoTyper.start();
 
-        System.out.println("Finished execution in " + ((System.currentTimeMillis() - start) / 1000.0) + " ms");
+        double finish = (System.currentTimeMillis() - start) / 1000.0;
+        double without_screenshot_delay = Math.max(finish, Settings.SCREENSHOT_DELAY) - Math.min(finish, Settings.SCREENSHOT_DELAY);
+
+        System.out.println("Finished execution in " + finish + " ms");
+        System.out.println("Execution time without screenshot delay: " + without_screenshot_delay + " ms");
 
     }
 
