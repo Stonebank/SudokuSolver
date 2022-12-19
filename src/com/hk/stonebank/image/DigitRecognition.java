@@ -54,7 +54,8 @@ public class DigitRecognition {
                     result = "0";
                 if (result.length() > 1)
                     result = result.substring(0, 1);
-                System.out.println("Cell " + row + ", " + col + " = " + result);
+                if (Settings.DEBUG_MODE)
+                    System.out.println("Cell " + row + ", " + col + " = " + result);
                 board[row][col] = Integer.parseInt(result);
                 col++;
                 if (col > 8) {
