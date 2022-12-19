@@ -5,6 +5,12 @@ The newer version of the software will use [OpenCV](https://opencv.org/) and [Te
 
 The older software did not always work as intended. The objective is to make this software work flawlessly at any time. 
 
+# Usage
+
+To run SudokuSolver, clone the project via your IDE or code editor and execute "Launch.java".
+
+To obtain the best results, keep the opened browser in focus.
+
 # Backtracking solving algorithm 
 
 The backtracking solving algorithm is a brute-force search algorithm that tries all the possible combinations of numbers until a solution is found that satisfies the constraints of the puzzle.
@@ -14,12 +20,30 @@ Read more about it [here](https://www.geeksforgeeks.org/backtracking-algorithms/
 
 The objective of this algorithm is to identify and extract a Sudoku board from an image. 
 
-This is the steps summarized for this algorithm
+## Board detection 
 1. Image is converted to grayscale 
 2. Blur filter is applied to the image to reduce noise
 3. Canny edge detection algorithm to identify the contours and selects the largest contour
 4. It adds a margin to remove any borderlines 
 5. Finally the image is extracted by using the coordinates of the bounding rectangle
+
+### The extra processing technique
+In order to prepare for optimal contour detection and cell cropping, the board is preprocessed with the following steps:
+
+1. The output image is converted to grayscale
+2. Gaussian blur is applied to the grayscaled image to smooth the image
+3. Adaptive threshold to convert the image to black and white
+
+# Digit detection in each cell
+
+To ensure that the digit is in focus for the best OCR results, I had to design a solution that ensured the digit was cropped without any grid or borders included. This was because any non-cropped grid or border was often detected as either a '1' or a '7' which often resulted in incorrect solutions for the sudoku board. My solution was done with the following steps for each cell:
+
+1. Convert the cell image to grayscale
+2. Apply thresholding to create a binary image
+3. Find contours in the binary image
+4. Find the contour with the largest area (assumed to be the contour of the digit in the cell)
+5. Find the bounding rectangle of the largest contour
+6. Extract the region within the bounding rectangle
 
 # Tesseract 
 
