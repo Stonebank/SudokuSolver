@@ -47,7 +47,7 @@ To ensure that the digit is in focus for the best OCR results, I had to design a
 
 # Tesseract 
 
-The objective of this algorithm is to perform OCR to identify the digit. The training dataset applied for this is specified for digit training. The solution is still experimental and therefore it is not optimal yet.
+The objective of this algorithm is to perform OCR to identify the digit. The training dataset applied for this is specified for digit training.
 
 # Developer
 
