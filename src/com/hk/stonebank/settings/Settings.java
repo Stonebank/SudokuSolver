@@ -6,6 +6,8 @@ public class Settings {
 
     public static final boolean DEBUG_MODE = true;
 
+    public static final String SUDOKU_URL = "https://www.sudoku.com";
+
     public static final int SUDOKU_BOARD_SIZE = 9;
 
     public static final File BOARD_IMAGE = new File("./resources/board/board.png");
@@ -15,5 +17,12 @@ public class Settings {
 
     public static final File TESSERACT_TRAINED_DATA = new File("./resources/tesseract/model/digits");
     public static final String TESSERACT_DPI = "300";
+
+    public static final int TYPE_DELAY = 10;
+    public static final int LEFT_KEY = 37;
+    public static final int RIGHT_KEY = 39;
+    public static final int DOWN_KEY = 40;
+
+    public static final long SCREENSHOT_DELAY = 3500;
 
 }
