@@ -21,6 +21,11 @@ public class AutoTyper {
 
     public void start() {
 
+        if (!board.canSolve()) {
+            System.err.println("This sudoku board cannot be solved.");
+            return;
+        }
+
         convertKeys();
 
         for (int i = 0; i < keys.length; i++) {
@@ -35,6 +40,8 @@ public class AutoTyper {
                 pressKey(keys[i][j]);
             }
         }
+
+        board.displayBoard();
 
     }
 
@@ -56,7 +63,8 @@ public class AutoTyper {
         robot.keyPress(key);
         robot.keyRelease(key);
         robot.delay(Settings.TYPE_DELAY);
-        System.out.println("AutoTyper pressed key: " + KeyEvent.getKeyText(key));
+        if (Settings.DEBUG_MODE)
+            System.out.println("AutoTyper pressed key: " + KeyEvent.getKeyText(key));
     }
 
 }
