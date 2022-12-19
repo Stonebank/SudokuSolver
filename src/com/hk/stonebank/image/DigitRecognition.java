@@ -65,12 +65,15 @@ public class DigitRecognition {
                 e.printStackTrace();
             }
         }
-        SudokuBoard board = new SudokuBoard(this.board);
-        if (!board.canSolve()) {
+        if (!getBoard().canSolve()) {
             System.err.println("Not solvable. The OCR may be incorrect.");
             return;
         }
-        board.displayBoard();
+        System.out.println("OCR successful! Initiating AutoTyper...");
+    }
+
+    public SudokuBoard getBoard() {
+        return new SudokuBoard(board);
     }
 
 }
