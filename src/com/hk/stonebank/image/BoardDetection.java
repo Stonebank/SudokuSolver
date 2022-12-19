@@ -2,10 +2,16 @@ package com.hk.stonebank.image;
 
 import com.hk.stonebank.settings.Settings;
 import org.opencv.core.*;
+import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -124,7 +130,7 @@ public class BoardDetection {
         var output = Imgcodecs.imread(Settings.BOARD_IMAGE_OUTPUT_CROPPED.getAbsolutePath());
 
         if (output.empty()) {
-            throw new IllegalArgumentException("Output is null or empty");
+            throw new IllegalStateException("Board image output is empty");
         }
 
         System.out.println("Detecting cells...");
@@ -138,17 +144,38 @@ public class BoardDetection {
                 var cellRect = new Rect(y * cellWidth, x * cellHeight, cellWidth, cellHeight);
                 var cell = new Mat(output, cellRect);
 
-                String fileName = String.format("cell_%d_%d.png", x, y);
-                Imgcodecs.imwrite(Settings.BOARD_CELL_IMAGE_OUTPUT + "/" + fileName, cell);
+                var gray = new Mat();
+                Imgproc.cvtColor(cell, gray, Imgproc.COLOR_BGR2GRAY);
+
+                Imgproc.threshold(gray, gray, 128, 255, Imgproc.THRESH_BINARY);
+
+                List<MatOfPoint> contours = new ArrayList<>();
+                Imgproc.findContours(gray, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
+                if (contours.isEmpty()) {
+                    throw new RuntimeException("No contours found");
+                }
+
+                MatOfPoint digitContour = null;
+                for (MatOfPoint contour : contours) {
+                    if (Imgproc.contourArea(contour) > 0) {
+                        digitContour = contour;
+                        break;
+                    }
+                }
+
+                if (digitContour == null) {
+                    throw new RuntimeException("No digit contour found");
+                }
+
+                var boundingRect = Imgproc.boundingRect(digitContour);
+                var result = new Mat(cell, boundingRect);
+
+                var fileName = String.format("cell_%d_%d.png", x, y);
+                Imgcodecs.imwrite(Settings.BOARD_CELL_IMAGE_OUTPUT + "/" + fileName, result);
 
             }
         }
-
-        if (Objects.requireNonNull(Settings.BOARD_CELL_IMAGE_OUTPUT.listFiles()).length != Settings.SUDOKU_BOARD_SIZE * Settings.SUDOKU_BOARD_SIZE) {
-            throw new IllegalStateException("The Sudoku board was not detected correctly");
-        }
-
-        System.out.println("Cells detected, output is located at " + Settings.BOARD_CELL_IMAGE_OUTPUT.getAbsolutePath());
 
     }
 
@@ -177,6 +204,63 @@ public class BoardDetection {
             Imgproc.line(image, p1, p2, new Scalar(0, 255, 0), 3);
         }
         return image;
+    }
+
+    public void takeScreenshot() {
+
+        System.out.println("Attempting to take a screenshot in " + Settings.SCREENSHOT_DELAY + " milliseconds...");
+
+        try {
+
+            Thread.sleep(Settings.SCREENSHOT_DELAY);
+
+            var screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+            ImageIO.write(new Robot().createScreenCapture(screenRect), "png", Settings.BOARD_IMAGE);
+
+            System.out.println("Screenshot successfully taken");
+
+        } catch (InterruptedException | AWTException | IOException e) {
+            System.err.println("Screenshot was not taken.");
+            e.printStackTrace();
+        }
+
+    }
+
+    public void openBrowser(String url) {
+        try {
+
+            String os_name = System.getProperty("os.name").toLowerCase();
+
+            if (canOpenBrowser()) {
+                Desktop.getDesktop().browse(new URI(url));
+                return;
+            }
+
+            if (os_name.startsWith("windows")) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+                return;
+            }
+
+            if (os_name.startsWith("mac")) {
+                Runtime.getRuntime().exec( new String[] {"open", url});
+                return;
+            }
+
+            if (os_name.startsWith("linux")) {
+                Runtime.getRuntime().exec( new String[] {"xdg-open", url});
+                return;
+            }
+
+            System.err.println("Could not open browser");
+
+        } catch (IOException | URISyntaxException e) {
+            System.err.println("Error! Operating system not supported.");
+            e.printStackTrace();
+        }
+    }
+
+    private boolean canOpenBrowser() {
+        return Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE);
     }
 
 }
