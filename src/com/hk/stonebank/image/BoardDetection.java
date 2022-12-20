@@ -10,6 +10,7 @@ import org.opencv.imgproc.Imgproc;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,19 +24,15 @@ public class BoardDetection {
 
     public BoardDetection(File image) {
         this.image = image;
-        if (!image.exists()) {
-            throw new IllegalArgumentException("Image does not exist");
-        }
-        if (!image.getName().endsWith(".png")) {
-            throw new IllegalArgumentException("Image is not a png");
+        if (!image.exists() || !image.getName().endsWith(".png")) {
+            throw new BoardNotFoundException();
         }
         if (Settings.BOARD_CELL_IMAGE_OUTPUT.exists()) {
             for (File cell : Objects.requireNonNull(Settings.BOARD_CELL_IMAGE_OUTPUT.listFiles())) {
                 if (cell == null)
                     continue;
-                if (!cell.delete()) {
-                    System.err.println("Failed to delete " + cell.getName());
-                }
+                if (!cell.delete())
+                    throw new RuntimeException("Failed to delete " + cell.getName());
             }
         }
     }
