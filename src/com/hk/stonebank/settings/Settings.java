@@ -1,10 +1,14 @@
 package com.hk.stonebank.settings;
 
+import com.hk.stonebank.board.mode.GameMode;
+
 import java.io.File;
 
 public class Settings {
 
-    public static final boolean DEBUG_MODE = false;
+    public static GameMode GAME_MODE = null;
+
+    public static final boolean DEBUG_MODE = true;
 
     public static final String SUDOKU_URL = "https://www.sudoku.com";
 
