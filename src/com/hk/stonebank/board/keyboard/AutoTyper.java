@@ -27,7 +27,7 @@ public class AutoTyper {
             for (int j = 0; j < keys.length; j++) {
                 if (i > 0 && j % 9 == 0) {
                     pressKey(Settings.DOWN_KEY);
-                    for (int k = 1; k <= 9; k++)
+                    for (int k = 1; k < 9; k++)
                         pressKey(Settings.LEFT_KEY);
                 }
                 if (j != 0)
