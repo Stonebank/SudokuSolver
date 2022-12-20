@@ -4,7 +4,7 @@ import java.io.File;
 
 public class Settings {
 
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
 
     public static final String SUDOKU_URL = "https://www.sudoku.com";
 
