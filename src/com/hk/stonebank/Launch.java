@@ -58,7 +58,7 @@ public class Launch {
         stopwatch.stop();
         var result = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-        Notification.send(new Notification("The board has been solved! Execution time: " + result + " ms"));
+        Notification.send(new Notification("The board has been solved! Total execution time: " + result + " ms"));
 
         System.out.println("Finished execution in " + result + " ms");
 
