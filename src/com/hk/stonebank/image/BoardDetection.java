@@ -1,8 +1,9 @@
 package com.hk.stonebank.image;
 
+import com.hk.stonebank.exception.BoardNotFoundException;
 import com.hk.stonebank.settings.Settings;
-import org.opencv.core.*;
 import org.opencv.core.Point;
+import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
@@ -69,7 +70,7 @@ public class BoardDetection {
         }
 
         if (largestContour == null || largestContour.empty()) {
-            throw new IllegalStateException("No board found");
+            throw new BoardNotFoundException();
         }
 
         var output = new Mat();
