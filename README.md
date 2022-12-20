@@ -5,6 +5,10 @@ The newer version of the software will use [OpenCV](https://opencv.org/) and [Te
 
 The older software did not always work as intended. The objective is to make this software work flawlessly at any time. 
 
+# Requirements
+
+This project has been developed with JDK 17. It is recommended to use this version to avoid any obstacles with the software.
+
 # Usage
 
 To run SudokuSolver, clone the project via your IDE or code editor and execute "Launch.java".
