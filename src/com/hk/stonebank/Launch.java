@@ -1,5 +1,6 @@
 package com.hk.stonebank;
 
+import com.google.common.base.Stopwatch;
 import com.hk.stonebank.board.keyboard.AutoTyper;
 import com.hk.stonebank.image.BoardDetection;
 import com.hk.stonebank.image.DigitRecognition;
@@ -8,6 +9,7 @@ import com.hk.stonebank.settings.Settings;
 import org.opencv.core.Core;
 
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class Launch {
 
@@ -15,7 +17,7 @@ public class Launch {
 
         Notification.send(new Notification("Welcome to SudokuSolver! Please keep browser in focus for best results and do not touch the board as the board is detected."));
 
-        long start = System.currentTimeMillis();
+        var stopwatch = Stopwatch.createStarted();
 
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
@@ -33,13 +35,12 @@ public class Launch {
         AutoTyper autoTyper = new AutoTyper(digitRecognition.getBoard());
         autoTyper.start();
 
-        double finish = (System.currentTimeMillis() - start) / 1000.0;
-        double without_screenshot_delay = Math.max(finish, Settings.SCREENSHOT_DELAY) - Math.min(finish, Settings.SCREENSHOT_DELAY);
+        stopwatch.stop();
+        var result = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
-        Notification.send(new Notification("The board has been solved! Execution time: " + finish + " ms"));
+        Notification.send(new Notification("The board has been solved! Execution time: " + result + " ms"));
 
-        System.out.println("Finished execution in " + finish + " ms");
-        System.out.println("Execution time without screenshot delay: " + without_screenshot_delay + " ms");
+        System.out.println("Finished execution in " + result + " ms");
 
 
     }
