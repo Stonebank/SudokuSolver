@@ -13,13 +13,15 @@ public class SudokuBoard {
     }
 
     public void displayBoard() {
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                System.out.print(" " + board[i][j]);
+                sb.append(" ").append(board[i][j]);
             }
-            System.out.println();
+            sb.append("\n");
         }
-        System.out.println();
+        sb.append("\n");
+        System.out.print(sb);
     }
 
     public boolean canSolve() {
