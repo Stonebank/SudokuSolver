@@ -1,13 +1,14 @@
 package com.hk.stonebank.image;
 
 import com.hk.stonebank.board.SudokuBoard;
+import com.hk.stonebank.exception.UnsolvableException;
+import com.hk.stonebank.notification.Notification;
 import com.hk.stonebank.settings.Settings;
 import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Objects;
 
 public class DigitRecognition {
@@ -67,10 +68,12 @@ public class DigitRecognition {
             }
         }
         if (!getBoard().canSolve()) {
-            System.err.println("Not solvable. The OCR may be incorrect.");
-            return;
+            throw new UnsolvableException();
         }
         System.out.println("OCR successful! Initiating AutoTyper...");
+
+        Notification.send(new Notification("Board solution is found! Do not touch the keyboard or mouse until the AutoTyper is done."));
+
     }
 
     public SudokuBoard getBoard() {
