@@ -21,11 +21,6 @@ public class AutoTyper {
 
     public void start() {
 
-        if (!board.canSolve()) {
-            System.err.println("This sudoku board cannot be solved.");
-            return;
-        }
-
         convertKeys();
 
         for (int i = 0; i < keys.length; i++) {
