@@ -48,7 +48,7 @@ The objective of this algorithm is to identify and extract a Sudoku board from a
 4. It adds a margin to remove any borderlines 
 5. Finally, the image is extracted by using the coordinates of the bounding rectangle
 
-![board detection](resources/board/board_output.png)
+![board detection](resources/Board/board_output.png)
 
 ### The extra processing technique
 In order to prepare for optimal contour detection and cell cropping, the board is preprocessed with the following steps:
@@ -57,7 +57,7 @@ In order to prepare for optimal contour detection and cell cropping, the board i
 2. Gaussian blur is applied to the grayscaled image to smooth the image
 3. Adaptive threshold to convert the image to black and white
 
-![extra processing](resources/board/board_output_cropped.png)
+![extra processing](resources/Board/board_output_cropped.png)
 
 # Digit detection in each cell
 
@@ -74,7 +74,7 @@ To ensure that the digit is in focus for the best OCR results, I had to design a
 
 The objective of this algorithm is to perform OCR to identify the digit. The training dataset applied for this is specified for digit training.
 
-![result](resources/board/board_output_solution.png)
+![result](resources/Board/board_output_solution.png)
 
 # Developer
 
