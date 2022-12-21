@@ -8,7 +8,7 @@ public class Settings {
 
     public static GameMode GAME_MODE = null;
 
-    public static final boolean DEBUG_MODE = true;
+    public static final boolean DEBUG_MODE = false;
 
     public static final String SUDOKU_URL = "https://www.sudoku.com";
 
@@ -17,6 +17,7 @@ public class Settings {
     public static final File BOARD_IMAGE = new File("./resources/board/board.png");
     public static final File BOARD_IMAGE_OUTPUT = new File("./resources/board/board_output.png");
     public static final File BOARD_IMAGE_OUTPUT_CROPPED = new File("./resources/board/board_output_cropped.png");
+    public static final File BOARD_IMAGE_OUTPUT_SOLUTION = new File("./resources/board/board_output_solution.png");
     public static final File BOARD_CELL_IMAGE_OUTPUT = new File("./resources/board/cells/");
 
     public static final File TESSERACT_TRAINED_DATA = new File("./resources/tesseract/model/digits");
