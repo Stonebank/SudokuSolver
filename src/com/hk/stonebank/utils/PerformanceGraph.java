@@ -17,7 +17,7 @@ public class PerformanceGraph {
         var xy_series = new XYSeries("Performance");
 
         for (int iteration : data.keySet())
-            xy_series.add(iteration, data.get(iteration));
+            xy_series.add(iteration, data.get(iteration) - Settings.SCREENSHOT_DELAY);
 
         var xy_dataset = new XYSeriesCollection();
         xy_dataset.addSeries(xy_series);
@@ -32,6 +32,8 @@ public class PerformanceGraph {
         chart.getPlot().setBackgroundPaint(Color.WHITE);
 
         ChartUtils.saveChartAsPNG(Settings.PERFORMANCE_GRAPH_OUTPUT, chart, 600, 400);
+
+        System.out.println("Average time: " + (data.values().stream().mapToLong(Long::longValue).average().orElse(-1) - Settings.SCREENSHOT_DELAY) + " ms");
 
     }
 
