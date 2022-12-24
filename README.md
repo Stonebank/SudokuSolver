@@ -19,7 +19,13 @@ The SudokuSolver is tested with https://www.sudoku.com for now.
 
 # Software performance
 
-I conducted a performance test of SudokuSolver using www.sudoku.com in evil mode with 100 iterations and an average performance of 2142 milliseconds. It is important to note that the hardware configuration can naturally affect the performance of the solver.
+### Updates in the new performance test:
+- Added MRV (Minimum Remaining Values) heuristic
+   - This improved the average runtime from 2142 milliseconds to 1630 milliseconds
+
+I conducted a performance test of SudokuSolver using www.sudoku.com in evil mode with 100 iterations and an average performance of 1630 milliseconds. It is important to note that the hardware configuration can naturally affect the performance of the solver.
+
+
 
 The steps included in this benchmark are:
 1. Opening the browser and the website
