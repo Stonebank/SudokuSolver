@@ -18,6 +18,8 @@ public class Launch {
 
     public static void main(String[] args) throws AWTException {
 
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
         System.out.println("Choose difficulty:");
         Arrays.stream(GameMode.values()).forEach(gameMode -> System.out.println(gameMode.ordinal() + 1 + ". " + gameMode.name()));
 
@@ -38,8 +40,6 @@ public class Launch {
         Notification.send(new Notification("Welcome to SudokuSolver! Please keep browser in focus for best results and do not touch the board as the board is detected."));
 
         var stopwatch = Stopwatch.createStarted();
-
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
         // Board detection. This will attempt to detect the sudoku board in the image and crop the board and the cells of the image.
         BoardDetection boardDetection = new BoardDetection(Settings.BOARD_IMAGE);
