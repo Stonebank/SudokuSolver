@@ -30,7 +30,7 @@ The steps included in this benchmark are:
 6. Filling the Sudoku
 
 
-![Performance graph](resources/performance_graph_evil_mode.png)
+![Performance graph](resources/24-12-2022_evil_mode.png)
 
 # Backtracking solving algorithm 
 
