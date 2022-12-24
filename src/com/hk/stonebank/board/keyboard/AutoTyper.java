@@ -57,7 +57,8 @@ public class AutoTyper {
     private void pressKey(int key) {
         robot.keyPress(key);
         robot.keyRelease(key);
-        robot.delay(Settings.TYPE_DELAY);
+        if (Settings.TYPE_DELAY > 0)
+            robot.delay(Settings.TYPE_DELAY);
         if (Settings.DEBUG_MODE)
             System.out.println("AutoTyper pressed key: " + KeyEvent.getKeyText(key));
     }
