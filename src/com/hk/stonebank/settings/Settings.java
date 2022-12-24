@@ -25,7 +25,7 @@ public class Settings {
     public static final File TESSERACT_TRAINED_DATA = new File("./resources/tesseract/model/digits");
     public static final String TESSERACT_DPI = "300";
 
-    public static final int TYPE_DELAY = 1;
+    public static final int TYPE_DELAY = 0;
     public static final int LEFT_KEY = 37;
     public static final int RIGHT_KEY = 39;
     public static final int DOWN_KEY = 40;
