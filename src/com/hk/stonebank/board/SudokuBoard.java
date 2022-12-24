@@ -25,23 +25,35 @@ public class SudokuBoard {
     }
 
     public boolean canSolve() {
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                if (board[row][col] == 0) {
-                    for (int num = 1; num <= size; num++) {
-                        if (isAccepted(row, col, num)) {
-                            board[row][col] = num;
-                            if (canSolve())
-                                return true;
-                            else
-                                board[row][col] = 0;
-                        }
+        int row = 0;
+        int col = 0;
+        int minValues = Integer.MAX_VALUE;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == 0) {
+                    int remainingValues = getRemainingValues(i, j);
+                    if (remainingValues < minValues) {
+                        row = i;
+                        col = j;
+                        minValues = remainingValues;
                     }
-                    return false;
                 }
             }
         }
-        return true;
+
+        if (minValues == Integer.MAX_VALUE)
+            return true;
+
+        for (int num = 1; num <= size; num++) {
+            if (isAccepted(row, col, num)) {
+                board[row][col] = num;
+                if (canSolve())
+                    return true;
+                else
+                    board[row][col] = 0;
+            }
+        }
+        return false;
     }
 
     private boolean inRow(int row, int num) {
@@ -72,6 +84,15 @@ public class SudokuBoard {
 
     private boolean isAccepted(int row, int col, int num) {
         return !inRow(row, num) && !inCol(col, num) && !inBox(row, col, num);
+    }
+
+    private int getRemainingValues(int row, int col) {
+        int count = 0;
+        for (int num = 1; num <= size; num++) {
+            if (isAccepted(row, col, num))
+                count++;
+        }
+        return count;
     }
 
     public int[][] getBoard() {
