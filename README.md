@@ -13,7 +13,7 @@ This project has been developed with JDK 17. It is recommended to use this versi
 
 To run SudokuSolver, clone the project via your IDE or code editor and execute "Launch.java".
 
-To obtain the best results, keep the opened browser in focus.
+To obtain the best results, keep the opened browser in focus (IMPORTANT: remove pop ups if it is your first time visiting the website)
 
 The SudokuSolver is tested with https://www.sudoku.com for now.
 
