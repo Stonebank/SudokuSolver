@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../SudokuSolver.Application/SudokuSolver.Application.csproj" />
+    <ProjectReference Include="../SudokuSolver.Domain/SudokuSolver.Domain.csproj" />
+    <ProjectReference Include="../SudokuSolver.Vision/SudokuSolver.Vision.csproj" />
+    <ProjectReference Include="../SudokuSolver.Ocr/SudokuSolver.Ocr.csproj" />
+    <ProjectReference Include="../SudokuSolver.Automation/SudokuSolver.Automation.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
+  </ItemGroup>
+  <ItemGroup><None Include="appsettings.json" CopyToOutputDirectory="PreserveNewest" /></ItemGroup>
+</Project>
