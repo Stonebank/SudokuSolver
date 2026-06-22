@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/SudokuSolver.Domain/SudokuSolver.Domain.csproj" />
+    <ProjectReference Include="../../src/SudokuSolver.Vision/SudokuSolver.Vision.csproj" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.15.2" />
+  </ItemGroup>
+</Project>

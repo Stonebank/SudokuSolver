@@ -1,88 +1,49 @@
-# SudokuSolver
+# SudokuSolver .NET Rewrite
 
-SudokuSolver is a successor from my previous [version](https://github.com/Stonebank/SudukoSolver-Old).
-The newer version of the software will use [OpenCV](https://opencv.org/) and [Tesseract](https://en.wikipedia.org/wiki/Tesseract) with the digits trained dataset. 
+This repository rewrites the original Java/OpenCV/Tesseract Sudoku automation tool as a modern .NET 10 console solution. The CLI opens a browser with Playwright, captures a Sudoku board, detects the grid with OpenCV, recognizes givens with Tesseract, solves with a bit-mask MRV solver, and optionally fills the page.
 
-The older software did not always work as intended. The objective is to make this software work flawlessly at any time. 
+## Original Java design summary
 
-# Requirements
+The Java version used `Desktop`/`Robot` to open and screenshot the browser, OpenCV Canny/largest-contour board cropping, Tess4J OCR over cropped cells, a recursive backtracking solver with MRV, and `Robot` keyboard typing. Its README notes that the browser must remain focused and first-visit popups must be removed manually. The rewrite removes those assumptions by using Playwright screenshots/clicks, readiness polling, structured debug output, and explicit confidence thresholds.
 
-This project has been developed with JDK 17. It is recommended to use this version to avoid any obstacles with the software.
+## Architecture
 
-# Usage
+- `SudokuSolver.Domain`: pure grid validation and bit-mask MRV solving.
+- `SudokuSolver.Application`: pipeline orchestration, result mapping, timing, debug JSON.
+- `SudokuSolver.Vision`: OpenCV board detection, perspective normalization, cell extraction, digit segmentation.
+- `SudokuSolver.Ocr`: Tesseract digit-only recognition behind `IDigitRecognizer`.
+- `SudokuSolver.Automation`: Playwright lifecycle, readiness checks, screenshots, filling.
+- `SudokuSolver.Cli`: console app using `Host.CreateApplicationBuilder(args)`, DI, logging, options, and cancellation.
 
-To run SudokuSolver, clone the project via your IDE or code editor and execute "Launch.java".
+## Prerequisites
 
-To obtain the best results, keep the opened browser in focus (IMPORTANT: remove pop ups if it is your first time visiting the website)
+- .NET 10 SDK (`global.json` targets `10.0.100` with roll-forward).
+- Playwright browsers: `pwsh src/SudokuSolver.Cli/bin/Debug/net10.0/playwright.ps1 install` after the first build.
+- Tesseract trained data in `./tessdata` or configure `Ocr:TessDataPath`.
+- OpenCV native runtime. The project references the Windows runtime package; Linux/macOS deployments should switch to the matching OpenCvSharp runtime package.
 
-The SudokuSolver is tested with https://www.sudoku.com for now.
+## Commands
 
-# Software performance
+```bash
+dotnet build
+dotnet test
+dotnet run --project src/SudokuSolver.Cli -- solve --url https://www.sudoku.com --headed --debug-output ./debug --fill
+dotnet run --project src/SudokuSolver.Cli -- solve --url https://www.sudoku.com --headless --no-fill
+dotnet run --project benchmarks/SudokuSolver.Benchmarks -c Release
+```
 
-### Updates in the new performance test:
-- Added MRV (Minimum Remaining Values) heuristic
-   - This improved the average runtime from 2142 milliseconds to 1630 milliseconds
+## CLI options
 
-I conducted a performance test of SudokuSolver using www.sudoku.com in evil mode with 100 iterations and an average performance of 1630 milliseconds. It is important to note that the hardware configuration can naturally affect the performance of the solver.
+`solve` supports `--url`, `--headed`, `--headless`, `--difficulty easy|medium|hard|expert|evil`, `--debug-output`, `--timeout-seconds`, `--ocr-confidence-threshold`, `--board-confidence-threshold`, `--fill`, `--no-fill`, `--viewport-width`, `--viewport-height`, and `--browser chromium|firefox|webkit`.
 
+## Debug output
 
+When `--debug-output ./debug` is provided, the vision pipeline writes original screenshots, grayscale/threshold images, candidate overlays, normalized board images, grid overlays, per-cell crops/masks, digit crops, `recognition.json`, and `timings.json`.
 
-The steps included in this benchmark are:
-1. Opening the browser and the website
-2. Screenshot of the website
-3. Image processing
-4. OCR
-5. Solving the Sudoku
-6. Filling the Sudoku
+## Exit codes
 
+`0` success, `1` unexpected failure, `2` board detection failed, `3` OCR confidence too low, `4` recognized puzzle invalid, `5` no solution, `6` browser automation failed, `7` timeout/cancellation.
 
-![Performance graph](resources/24-12-2022_evil_mode.png)
+## Known limitations and extension path
 
-# Backtracking solving algorithm 
-
-The backtracking solving algorithm is a brute-force search algorithm that tries all the possible combinations of numbers until a solution is found that satisfies the constraints of the puzzle.
-Read more about it [here](https://www.geeksforgeeks.org/backtracking-algorithms/)
-
-# OpenCV algorithm 
-
-The objective of this algorithm is to identify and extract a Sudoku board from an image. 
-
-## Board detection 
-1. Image is converted to grayscale 
-2. Blur filter is applied to the image to reduce noise
-3. Canny edge detection algorithm to identify the contours and selects the largest contour
-4. It adds a margin to remove any borderlines 
-5. Finally, the image is extracted by using the coordinates of the bounding rectangle
-
-![board detection](resources/Board/board_output.png)
-
-### The extra processing technique
-In order to prepare for optimal contour detection and cell cropping, the board is preprocessed with the following steps:
-
-1. The output image is converted to grayscale
-2. Gaussian blur is applied to the grayscaled image to smooth the image
-3. Adaptive threshold to convert the image to black and white
-
-![extra processing](resources/Board/board_output_cropped.png)
-
-# Digit detection in each cell
-
-To ensure that the digit is in focus for the best OCR results, I had to design a solution that ensured the digit was cropped without any grid or borders included. This was because any non-cropped grid or border was often detected as either a '1' or a '7' which often resulted in incorrect solutions for the sudoku board. My solution was done with the following steps for each cell:
-
-1. Convert the cell image to grayscale
-2. Apply thresholding to create a binary image
-3. Find contours in the binary image
-4. Find the contour with the largest area (assumed to be the contour of the digit in the cell)
-5. Find the bounding rectangle of the largest contour
-6. Extract the region within the bounding rectangle
-
-# Tesseract 
-
-The objective of this algorithm is to perform OCR to identify the digit. The training dataset applied for this is specified for digit training.
-
-![result](resources/Board/board_output_solution.png)
-
-# Developer
-
-This software is developed and designed by Hassan K
-
+Tesseract remains sensitive to font/theme changes; the OCR boundary is intentionally narrow so an ONNX digit classifier or template matcher can replace it. Live sudoku.com integration can break if the site markup or interaction model changes, but board detection uses screenshots rather than fixed DOM coordinates.
